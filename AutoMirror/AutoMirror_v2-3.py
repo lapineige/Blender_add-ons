@@ -12,7 +12,7 @@ bl_info = {
     "name": "Auto Mirror",
     "description": "Super fast cutting and mirroring for mesh",
     "author": "Lapineige",
-    "version": (2, 1),
+    "version": (2, 3),
     "blender": (2, 7, 1),
     "location": "View 3D > Toolbar > Tools tab > AutoMirror (panel)",
     "warning": "", 
