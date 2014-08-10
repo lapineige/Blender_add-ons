@@ -1,7 +1,5 @@
 ######################################################################################################
 # A simple add-on to allows the user to precisly place the border render region (Ctrl+B in cam view) #
-# using numerical input, witch can be animated                                                       #
-# First version of the add-on                                                                        #
 # Actualy uncommented (see further version)                                                          #
 # Author: Lapineige                                                                                  #
 # License: GPL v3                                                                                   #
