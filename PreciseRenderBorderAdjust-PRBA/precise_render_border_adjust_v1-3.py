@@ -1,5 +1,6 @@
 ######################################################################################################
 # A simple add-on to allows the user to precisly place the border render region (Ctrl+B in cam view) #
+# using numerical input, witch can be animated                                                       #
 # Actualy uncommented (see further version)                                                          #
 # Author: Lapineige                                                                                  #
 # License: GPL v3                                                                                   #
@@ -55,7 +56,6 @@ class PreciseRenderBorderAdjust(bpy.types.Panel):
         row.label(text="")
         row = sub.row(align=True)
         row.prop(scene.render, "border_min_x", text="Min", slider=True)
-        row.operator("scene.anim_border_set")
         row.prop(scene.render, "border_max_x", text="Max", slider=True)
         row = sub.row()
         row.label(text="")
@@ -156,6 +156,3 @@ if __name__ == "__main__":
     C.scene.y_max_pixels = Y
     
     register()
-
-
-
