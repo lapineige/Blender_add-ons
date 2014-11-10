@@ -12,7 +12,7 @@ bl_info = {
     "name": "Incremental Saving",
     "description": 'Save your file with an incremental suffix',
     "author": "Lapineige",
-    "version": (1, 0),
+    "version": (1, 1),
     "blender": (2, 72, 0),
     "location": "Search > Save Incremental",
     "warning": "",
@@ -29,7 +29,8 @@ class FileIncrementalSave(bpy.types.Operator):
     bl_options = {"REGISTER"}
    
     def execute(self, context):
-        f_path = bpy.data.filepath      
+        f_path = bpy.data.filepath
+        bpy.ops.wm.save_mainfile(filepath=f_path)
         if f_path.find("_") != -1:
             str_nb = f_path.rpartition("_")[-1].rpartition(".blend")[0]
             int_nb = int(str_nb)
@@ -44,9 +45,10 @@ class FileIncrementalSave(bpy.types.Operator):
                 output = f_path.replace(str_nb,new_nb)
         else:
             output = f_path.rpartition(".blend")[0]+"_001"+".blend"
-        
+            
         bpy.ops.wm.save_as_mainfile(filepath=output)
         self.report({'INFO'}, "File: {0} - Created at: {1}".format(output[len(bpy.path.abspath("//")):], output[:len(bpy.path.abspath("//"))]))
+        bpy.ops.wm.open_mainfile(filepath=f_path)
         return {'FINISHED'}
 
 def register():
