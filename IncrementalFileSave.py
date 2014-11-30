@@ -1,5 +1,5 @@
 ######################################################################################################
-# An operator to save your file with an incremental suffix.                                          #
+# An operator to save your file with an incremental suffix                                          #
 # Actualy partly uncommented - if you do not understand some parts of the code,                      #
 # please see further version or contact me.                                                          #
 # Author: Lapineige                                                                                  #
@@ -12,7 +12,7 @@ bl_info = {
     "name": "Incremental Saving",
     "description": 'Save your file with an incremental suffix',
     "author": "Lapineige",
-    "version": (1, 1),
+    "version": (1, 2),
     "blender": (2, 72, 0),
     "location": "Search > Save Incremental",
     "warning": "",
@@ -29,27 +29,24 @@ class FileIncrementalSave(bpy.types.Operator):
     bl_options = {"REGISTER"}
    
     def execute(self, context):
+        #print()
         f_path = bpy.data.filepath
         bpy.ops.wm.save_mainfile(filepath=f_path)
-        if f_path.find("_") != -1:
-            str_nb = f_path.rpartition("_")[-1].rpartition(".blend")[0]
-            int_nb = int(str_nb)
-            new_nb = str_nb.replace(str(int_nb),str(int_nb+1))   
-            output = f_path.replace(str_nb,new_nb)
-            
-            i = 1
-            while os.path.isfile(output):
-                str_nb = f_path.rpartition("_")[-1].rpartition(".blend")[0]
-                i += 1
-                new_nb = str_nb.replace(str(int_nb),str(int_nb+i))
-                output = f_path.replace(str_nb,new_nb)
-        else:
-            output = f_path.rpartition(".blend")[0]+"_001"+".blend"
-            
-        bpy.ops.wm.save_as_mainfile(filepath=output)
+        str_nb = "001"
+        int_nb = 1
+        new_nb = str_nb.replace(str(int_nb),str(int_nb+1))   
+        output = f_path.replace(str_nb,new_nb)
+
+        i = 1
+        while os.path.isfile(output):
+            i += 1
+            new_nb = str_nb.replace(str(int_nb),str(int_nb+i))
+            output = f_path.rpartition("_")[-1].rpartition(".blend")[0] + '_' + new_nb + '.blend'
+        
+        bpy.ops.wm.save_as_mainfile(filepath=output, copy=True)
         self.report({'INFO'}, "File: {0} - Created at: {1}".format(output[len(bpy.path.abspath("//")):], output[:len(bpy.path.abspath("//"))]))
-        bpy.ops.wm.open_mainfile(filepath=f_path)
         return {'FINISHED'}
+        ###### PENSER A TESTER AUTRES FICHIERS DU DOSSIER, VOIR SI NUMERO SUPERIEUR ==> WARNING
 
 def register():
     bpy.utils.register_class(FileIncrementalSave)
