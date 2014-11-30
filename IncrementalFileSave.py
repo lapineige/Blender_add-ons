@@ -29,22 +29,24 @@ class FileIncrementalSave(bpy.types.Operator):
     bl_options = {"REGISTER"}
    
     def execute(self, context):
-        #print()
-        f_path = bpy.data.filepath
-        bpy.ops.wm.save_mainfile(filepath=f_path)
-        str_nb = "001"
-        int_nb = 1
-        new_nb = str_nb.replace(str(int_nb),str(int_nb+1))   
-        output = f_path.replace(str_nb,new_nb)
+        if bpy.data.filepath:
+            f_path = bpy.data.filepath
+            bpy.ops.wm.save_mainfile(filepath=f_path)
+            str_nb = "001"
+            int_nb = 1
+            new_nb = str_nb.replace(str(int_nb),str(int_nb+1))   
+            output = f_path.replace(str_nb,new_nb)
 
-        i = 1
-        while os.path.isfile(output):
-            i += 1
-            new_nb = str_nb.replace(str(int_nb),str(int_nb+i))
-            output = f_path.rpartition("_")[-1].rpartition(".blend")[0] + '_' + new_nb + '.blend'
-        
-        bpy.ops.wm.save_as_mainfile(filepath=output, copy=True)
-        self.report({'INFO'}, "File: {0} - Created at: {1}".format(output[len(bpy.path.abspath("//")):], output[:len(bpy.path.abspath("//"))]))
+            i = 1
+            while os.path.isfile(output):
+                i += 1
+                new_nb = str_nb.replace(str(int_nb),str(int_nb+i))
+                output = f_path.rpartition("_")[-1].rpartition(".blend")[0] + '_' + new_nb + '.blend'
+            
+            bpy.ops.wm.save_as_mainfile(filepath=output, copy=True)
+            self.report({'INFO'}, "File: {0} - Created at: {1}".format(output[len(bpy.path.abspath("//")):], output[:len(bpy.path.abspath("//"))]))
+        else:
+            self.report({'WARNING'}, "Please save your main file")
         return {'FINISHED'}
         ###### PENSER A TESTER AUTRES FICHIERS DU DOSSIER, VOIR SI NUMERO SUPERIEUR ==> WARNING
 
