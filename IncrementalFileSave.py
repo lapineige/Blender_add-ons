@@ -12,7 +12,7 @@ bl_info = {
     "name": "Incremental Saving",
     "description": 'Save your file with an incremental suffix',
     "author": "Lapineige",
-    "version": (1, 2),
+    "version": (1, 3),
     "blender": (2, 72, 0),
     "location": "Search > Save Incremental",
     "warning": "",
@@ -50,12 +50,18 @@ class FileIncrementalSave(bpy.types.Operator):
         return {'FINISHED'}
         ###### PENSER A TESTER AUTRES FICHIERS DU DOSSIER, VOIR SI NUMERO SUPERIEUR ==> WARNING
 
+def draw_into_file_menu(self,context):
+    self.layout.operator('file.save_incremental', icon='SAVE_COPY')
+
+
 def register():
     bpy.utils.register_class(FileIncrementalSave)
+    bpy.types.INFO_MT_file.prepend(draw_into_file_menu)
 
 
 def unregister():
     bpy.utils.unregister_class(FileIncrementalSave)
+    bpy.types.INFO_MT_file.remove(draw_into_file_menu)
 
 
 if __name__ == "__main__":
