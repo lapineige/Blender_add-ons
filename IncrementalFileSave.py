@@ -12,7 +12,7 @@ bl_info = {
     "name": "Incremental Saving",
     "description": 'Save your file with an incremental suffix',
     "author": "Lapineige",
-    "version": (1, 3),
+    "version": (1, 4),
     "blender": (2, 72, 0),
     "location": "Search > Save Incremental",
     "warning": "",
@@ -37,12 +37,13 @@ class FileIncrementalSave(bpy.types.Operator):
             new_nb = str_nb.replace(str(int_nb),str(int_nb+1))   
             output = f_path.replace(str_nb,new_nb)
 
-            i = 1
+            i = 0
             while os.path.isfile(output):
-                i += 1
                 new_nb = str_nb.replace(str(int_nb),str(int_nb+i))
                 output = f_path.rpartition("_")[-1].rpartition(".blend")[0] + '_' + new_nb + '.blend'
+                i += 1
             
+            bpy.ops.wm.save_mainfile()
             bpy.ops.wm.save_as_mainfile(filepath=output, copy=True)
             self.report({'INFO'}, "File: {0} - Created at: {1}".format(output[len(bpy.path.abspath("//")):], output[:len(bpy.path.abspath("//"))]))
         else:
