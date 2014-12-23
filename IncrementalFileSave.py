@@ -23,33 +23,61 @@ bl_info = {
 ##############
 import bpy, os
 
+def detect_number(name):
+    last_nb_index = -1
+
+    for i in range(1,len(name)):
+        if name[-i].isnumeric():
+            if last_nb_index == -1:
+                last_nb_index = len(name)-i+1 # +1 because last index in [:] need to be 1 more
+        elif last_nb_index != -1:
+            first_nb_index = len(name)-i+1 #+1 to restore previous index
+            return (first_nb_index,last_nb_index,name[first_nb_index:last_nb_index]) #first: index of the number / last: last number index +1
+    return False
+
 class FileIncrementalSave(bpy.types.Operator):
     bl_idname = "file.save_incremental"
     bl_label = "Save Incremental"
-    bl_options = {"REGISTER"}
    
     def execute(self, context):
         if bpy.data.filepath:
             f_path = bpy.data.filepath
             bpy.ops.wm.save_mainfile(filepath=f_path)
-            str_nb = "001"
-            int_nb = 1
-            new_nb = str_nb.replace(str(int_nb),str(int_nb+1))   
-            output = f_path.replace(str_nb,new_nb)
 
-            i = 0
-            while os.path.isfile(output):
-                new_nb = str_nb.replace(str(int_nb),str(int_nb+i))
-                output = f_path.rpartition("_")[-1].rpartition(".blend")[0] + '_' + new_nb + '.blend'
-                i += 1
+            increment_files=[file for file in os.listdir(os.path.dirname(f_path)) if os.path.basename(f_path).split('.blend')[0] in file.split('.blend')[0] and file.split('.blend')[0] !=  os.path.basename(f_path).split('.blend')[0]]
+            for file in increment_files:
+                if not detect_number(file):
+                    increment_file.remove(file)
+            numbers_index = [ ( index, detect_number(file.split('.blend')[0]) ) for index, file in enumerate(increment_files)]
+            numbers = [index_nb[1] for index_nb in numbers_index] #[detect_number(file.split('.blend')[0]) for file in increment_files]
+            if numbers:
+                str_nb = str( max([int(n[2]) for n in numbers])+1 ).zfill(3) # zfill to always have something like 001, 010, 100
+
             
+            if increment_files:
+                d_nb = detect_number(increment_files[-1].split('.blend')[0])
+            else:
+                d_nb =False
+
+            if d_nb:
+                if len(increment_files[-1].split('.blend')[0]) < d_nb[1]: # in case last_nb_index is just after filename's max index
+                    output = bpy.path.abspath("//") + increment_files[-1].split('.blend')[0][:d_nb[0]] + str_nb + '.blend'
+                else:
+                    output = bpy.path.abspath("//") + increment_files[-1].split('.blend')[0][:d_nb[0]] + str_nb + increment_files[-1].split('.blend')[0][d_nb[1]:] + '.blend'
+            else:
+                output = f_path.split(".blend")[0] + '_' + '001' + '.blend'
+
+            if os.path.isfile(output):
+                self.report({'WARNING'}, "Internal Error: trying to save over an existing file. Cancelled")
+                print('Tested Output: ', output)
+                return {'CANCELLED'}
             bpy.ops.wm.save_mainfile()
             bpy.ops.wm.save_as_mainfile(filepath=output, copy=True)
             self.report({'INFO'}, "File: {0} - Created at: {1}".format(output[len(bpy.path.abspath("//")):], output[:len(bpy.path.abspath("//"))]))
         else:
-            self.report({'WARNING'}, "Please save your main file")
+            self.report({'WARNING'}, "Please save a main file")
         return {'FINISHED'}
-        ###### PENSER A TESTER AUTRES FICHIERS DU DOSSIER, VOIR SI NUMERO SUPERIEUR ==> WARNING
+        ###### PENSER A TESTER AUTRES FICHIERS DU DOSSIER, VOIR SI TROU DANS NUMEROTATION==> WARNING
 
 def draw_into_file_menu(self,context):
     self.layout.operator('file.save_incremental', icon='SAVE_COPY')
