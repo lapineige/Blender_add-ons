@@ -1,125 +1,109 @@
 ######################################################################################################
-# A simple add-on that enhance the override material tool (from renderlayer panel)                   #
+# An operator to save your file with an incremental suffix                                          #
 # Actualy partly uncommented - if you do not understand some parts of the code,                      #
-# please see further version or contact me                                                           #
+# please see further version or contact me.                                                          #
 # Author: Lapineige                                                                                  #
 # License: GPL v3                                                                                    #
 ######################################################################################################
 
-
 ############# Add-on description (used by Blender)
 
 bl_info = {
-    "name": "Material Advanced Override",
-    "description": 'Material Override Tools - with advanced exclude options',
+    "name": "Incremental Saving",
+    "description": 'Save your file with an incremental suffix',
     "author": "Lapineige",
-    "version": (0, 4),
+    "version": (1, 5),
     "blender": (2, 72, 0),
-    "location": "Properties >",
+    "location": "Search > Save Incremental",
     "warning": "",
-    "wiki_url": "http://blenderlounge.fr/forum/viewtopic.php?f=26&t=810",
-    "tracker_url": "http://blenderlounge.fr/forum/viewtopic.php?f=26&t=810",
-    "category": "Render"}
+    "wiki_url": "",
+    "tracker_url": "http://blenderlounge.fr/forum/viewtopic.php?f=18&t=736",
+    "category": "System"}
 
-import bpy
+##############
+import bpy, os
 
-bpy.types.Scene.OW_only_selected = bpy.props.BoolProperty(name='Affect Only Selected',default=True)
-bpy.types.Scene.OW_exclude_type = bpy.props.EnumProperty(items=[('index','Material Index','',0),('group','Group','',1),('layer','Layer','',2)])
-bpy.types.Scene.OW_pass_index = bpy.props.IntProperty(name='Pass Index',default=1)
-bpy.types.Scene.OW_material = bpy.props.StringProperty(name='Material',maxlen=63)
-bpy.types.Scene.OW_group = bpy.props.StringProperty(name='Group',maxlen=63)
+def detect_number(name):
+    last_nb_index = -1
 
-class OverwriteSetup(bpy.types.Operator):
-    """Tooltip"""
-    bl_idname = "render.overwrite_setup"
-    bl_label = "Overwrite Setup"
-    
-    l_m = []
-    
-    bpy.types.Scene.override_layer = bpy.props.BoolVectorProperty(subtype='LAYER', size=20)
-    
-    @classmethod
-    def poll(cls, context):
-        return context.scene.OW_material
-    
+    for i in range(1,len(name)):
+        if name[-i].isnumeric():
+            if last_nb_index == -1:
+                last_nb_index = len(name)-i+1 # +1 because last index in [:] need to be 1 more
+        elif last_nb_index != -1:
+            first_nb_index = len(name)-i+1 #+1 to restore previous index
+            return (first_nb_index,last_nb_index,name[first_nb_index:last_nb_index]) #first: index of the number / last: last number index +1
+    return False
+
+class FileIncrementalSave(bpy.types.Operator):
+    bl_idname = "file.save_incremental"
+    bl_label = "Save Incremental"
+   
     def execute(self, context):
-        for obj in bpy.data.objects:
-            if (obj.select == True)*context.scene.OW_only_selected or not context.scene.OW_only_selected:
-                if len(obj.material_slots):
-                    if context.scene.OW_exclude_type == 'index':
-                        if not obj.material_slots[0].material.pass_index == context.scene.OW_pass_index:
-                            self.l_m.append((obj,obj.material_slots[0].material))
-                            obj.material_slots[0].material = bpy.data.materials[context.scene.OW_material]
-                    elif context.scene.OW_exclude_type == 'group' and context.scene.OW_group:
-                        if obj.name in [g_obj.name for g_obj in bpy.data.groups[context.scene.OW_group].objects]:
-                            self.l_m.append((obj,obj.material_slots[0].material))
-                            obj.material_slots[0].material = bpy.data.materials[context.scene.OW_material]
-                    elif context.scene.OW_exclude_type == 'layer':
-                        if not (True in [(context.scene.override_layer[index])*(context.scene.override_layer[index]==obj.layers[index]) for index in range(len(obj.layers))]):
-                            self.l_m.append((obj,obj.material_slots[0].material))
-                            obj.material_slots[0].material = bpy.data.materials[context.scene.OW_material]
-        return {'FINISHED'}
+        if bpy.data.filepath:
+            f_path = bpy.data.filepath
+            #bpy.ops.wm.save_mainfile(filepath=f_path)
 
-class OverwriteRestore(bpy.types.Operator):
-    """Tooltip"""
-    bl_idname = "render.overwrite_restore"
-    bl_label = "Overwrite Restore"
-    
-    l_m = []
+            increment_files=[file for file in os.listdir(os.path.dirname(f_path)) if os.path.basename(f_path).split('.blend')[0] in file.split('.blend')[0] and file.split('.blend')[0] !=  os.path.basename(f_path).split('.blend')[0]]
+            for file in increment_files:
+                if not detect_number(file):
+                    increment_files.remove(file)
+            numbers_index = [ ( index, detect_number(file.split('.blend')[0]) ) for index, file in enumerate(increment_files)]
+            numbers = [index_nb[1] for index_nb in numbers_index] #[detect_number(file.split('.blend')[0]) for file in increment_files]
+            if numbers: # prevent from error with max()
+                str_nb = str( max([int(n[2]) for n in numbers])+1 ) # zfill to always have something like 001, 010, 100
 
-    @classmethod
-    def poll(cls, context):
-        return True
-    
-    def execute(self, context):
-        for obj_mat in bpy.types.RENDER_OT_overwrite_setup.l_m:
-            obj_mat[0].material_slots[0].material = obj_mat[1]
-        bpy.types.RENDER_OT_overwrite_setup.l_m = []
-        return {'FINISHED'}
+            if increment_files:
+                d_nb = detect_number(increment_files[-1].split('.blend')[0])
+                str_nb.zfill(len(d_nb[2]))
+                print(d_nb, len(d_nb[2]))
+            else:
+                d_nb =False
+                d_nb_filepath = detect_number(os.path.basename(f_path).split('.blend')[0])
+                #if numbers: ## USELESS ??
+                #    str_nb.zfill(3)
+                if d_nb_filepath:
+                    str_nb = str(int(d_nb_filepath[2]) + 1).zfill(len(d_nb_filepath[2]))
 
+            if d_nb:
+                if len(increment_files[-1].split('.blend')[0]) < d_nb[1]: # in case last_nb_index is just after filename's max index
+                    output = bpy.path.abspath("//") + increment_files[-1].split('.blend')[0][:d_nb[0]] + str_nb + '.blend'
+                else:
+                    output = bpy.path.abspath("//") + increment_files[-1].split('.blend')[0][:d_nb[0]] + str_nb + increment_files[-1].split('.blend')[0][d_nb[1]:] + '.blend'
+            else:
+                if d_nb_filepath:
+                    if len(os.path.basename(f_path).split('.blend')[0]) < d_nb_filepath[1]: # in case last_nb_index is just after filename's max index
+                        output = bpy.path.abspath("//") + os.path.basename(f_path).split('.blend')[0][:d_nb_filepath[0]] + str_nb + '.blend'
+                    else:
+                        output = bpy.path.abspath("//") + os.path.basename(f_path).split('.blend')[0][:d_nb_filepath[0]] + str_nb + os.path.basename(f_path).split('.blend')[0][d_nb_filepath[1]:] + '.blend'
+                else:
+                    output = f_path.split(".blend")[0] + '_' + '001' + '.blend'
 
-class MaterialOverrideTools(bpy.types.Panel):
-    """  """
-    bl_label = "Material Override Tools"
-    bl_idname = "material_override_tools"
-    bl_space_type = 'PROPERTIES'
-    bl_region_type = 'WINDOW'
-    bl_context = "render_layer"  
-    
-    def draw(self, context):
-        layout = self.layout
-        if bpy.types.RENDER_OT_overwrite_setup.l_m:
-            layout.operator('render.overwrite_restore')
-        else:
-            layout.operator('render.overwrite_setup')
-            layout.label('Currently not working with multiple materials per object', icon='CANCEL')
+            if os.path.isfile(output):
+                self.report({'WARNING'}, "Internal Error: trying to save over an existing file. Cancelled")
+                print('Tested Output: ', output)
+                return {'CANCELLED'}
+            bpy.ops.wm.save_mainfile()
+            bpy.ops.wm.save_as_mainfile(filepath=output, copy=True)
             
-        
-        layout.prop_search(context.scene, "OW_material", bpy.data, "materials", icon='MATERIAL_DATA')
-        layout.prop(context.scene, 'OW_only_selected',toggle=True, icon='BORDER_RECT')
-        
-        box = layout.box()
-        box.label('Exclude from effect:')
-        row = box.row()
-        row.prop(context.scene, 'OW_exclude_type', expand=True)
-        if context.scene.OW_exclude_type == 'index':
-            box.prop(context.scene, 'OW_pass_index')
-        elif context.scene.OW_exclude_type == 'group':
-            box.prop_search(context.scene, "OW_group", bpy.data, "groups", icon='GROUP')
-        elif context.scene.OW_exclude_type == 'layer':
-            box.prop(context.scene, 'override_layer', text='')
-                
+            self.report({'INFO'}, "File: {0} - Created at: {1}".format(output[len(bpy.path.abspath("//")):], output[:len(bpy.path.abspath("//"))]))
+        else:
+            self.report({'WARNING'}, "Please save a main file")
+        return {'FINISHED'}
+        ###### PENSER A TESTER AUTRES FICHIERS DU DOSSIER, VOIR SI TROU DANS NUMEROTATION==> WARNING
+
+def draw_into_file_menu(self,context):
+    self.layout.operator('file.save_incremental', icon='SAVE_COPY')
+
 
 def register():
-    bpy.utils.register_class(OverwriteSetup)
-    bpy.utils.register_class(OverwriteRestore)
-    bpy.utils.register_class(MaterialOverrideTools)
+    bpy.utils.register_class(FileIncrementalSave)
+    bpy.types.INFO_MT_file.prepend(draw_into_file_menu)
 
 
 def unregister():
-    bpy.utils.unregister_class(OverwriteSetup)
-    bpy.utils.unregister_class(OverwriteRestore)
-    bpy.utils.unregister_class(MaterialOverrideTools)
+    bpy.utils.unregister_class(FileIncrementalSave)
+    bpy.types.INFO_MT_file.remove(draw_into_file_menu)
 
 
 if __name__ == "__main__":
