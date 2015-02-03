@@ -13,4 +13,4 @@ If you enjoy them, please make a donation by buying my Lapineige's Tools, a comp
 
 Add-ons et script python pour le logiciel 3D Blender, réalisés durant mon temps libre.
 Actuellement ils sont tous disponibles sous licence GPL v3: vous êtes libre de les réutiliser comme vous le souhaitez (et je suis très intéressé par ce que vous pourrez faire avec ^^. Les retours serons très appréciés).
-Si vous appréciez ces outils, faites un don en achetant la compitation Lapineige's Tools: http://cgcookiemarkets.com/blender/all-products/lapineiges-tool-add-ons-compilation/
+Si vous appréciez ces outils, faites un don en achetant la compilation de ces outils, les Lapineige's Tools: http://cgcookiemarkets.com/blender/all-products/lapineiges-tool-add-ons-compilation/
