@@ -6,6 +6,18 @@
 # License: GPL v3                                                                                    #
 ######################################################################################################
 
+bl_info = {
+    "name": "Wire Tools",
+    "description": 'Some options to enable wire (into solid mode) to all objects',
+    "author": "Lapineige",
+    "version": (1, 0),
+    "blender": (2, 73, 0),
+    "location": "3D View > Properties Panel > Shading",
+    "warning": "",
+    "wiki_url": "",
+    "tracker_url": "http://blenderlounge.fr/forum/viewtopic.php?f=18&t=736",
+    "category": "3D View"}
+
 import bpy
 
 bpy.types.Scene.WT_only_selection = bpy.props.BoolProperty(name="Only Selection")
