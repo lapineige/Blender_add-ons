@@ -37,6 +37,7 @@ class HideAllWire(bpy.types.Operator):
             if (not context.scene.WT_only_selection)  or  (obj.select and context.scene.WT_only_selection and not context.scene.WT_invert)  or  ((context.scene.WT_invert and context.scene.WT_only_selection) and not obj.select):
                 if hasattr(obj,"show_wire"):
                     obj.show_wire,obj.show_all_edges = False,False
+        return {'FINISHED'}
 
 class DrawOnlyBounds(bpy.types.Operator):
     """Display only object boundaries"""
