@@ -116,7 +116,7 @@ class AutoIncrementalSaveModal(bpy.types.Operator):
         #print(tm()-self.time)
 
         if context.user_preferences.addons[__name__].preferences.stop == True or event.type == 'ESC':
-            print('STOP')
+            print('Auto Save Disabeled')
             return {'FINISHED'}
 
         if tm()-self.time >= context.user_preferences.addons[__name__].preferences.time_btw_save:
