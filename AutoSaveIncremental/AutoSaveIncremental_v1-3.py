@@ -46,7 +46,7 @@ class AutoSaveIncrementalPreferencesPanel(bpy.types.AddonPreferences):
         layout.prop(self, "stop", text='Stop')
         return {'FINISHED'}
 
-class AutoFileIncrementalSave(bpy.types.Operator):
+class AutoIncrementalSave(bpy.types.Operator):
     bl_idname = "file.auto_save_incremental"
     bl_label = "Save Incremental"
     bl_options = {'INTERNAL'}
