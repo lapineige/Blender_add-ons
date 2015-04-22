@@ -166,7 +166,7 @@ def detect_number(name):
     return False
 
 def draw_into_file_menu(self,context):
-    self.layout.operator('file.auto_save_incremental', icon='SAVE_COPY')
+    self.layout.operator('file.auto_save_incremental_modal', icon='SAVE_COPY')
 
 
 def register():
