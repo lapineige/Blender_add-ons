@@ -14,7 +14,7 @@ bl_info = {
     "author": "Lapineige",
     "version": (1, 3),
     "blender": (2, 74, 0),
-    "location": "Search > Auto Save Incremental",
+    "location": "File > Auto Save Incremental",
     "warning": "Beta version - may not work correctly",
     "wiki_url": "",
     "tracker_url": "",
@@ -41,12 +41,13 @@ class AutoSaveIncrementalPreferencesPanel(bpy.types.AddonPreferences):
         layout = self.layout
         layout.prop(self, "time_btw_save", text="Timer (seconds)")
         layout.prop(self, "dir_path_user_defined", text="Auto-Save Directory")
-        layout.operator('file.auto_save_incremental')
-        layout.prop(self, "stop")
+        #layout.operator('file.auto_save_incremental')
+        layout.label("Launch it from File > Auto Save Incremental. Don't forget to click on 'Stop' before saving you file (to avoid name conflict)")
+        layout.prop(self, "stop", text='Stop')
         return {'FINISHED'}
 
-class FileIncrementalSave(bpy.types.Operator):
-    bl_idname = "file.save_incremental"
+class AutoFileIncrementalSave(bpy.types.Operator):
+    bl_idname = "file.auto_save_incremental"
     bl_label = "Save Incremental"
     bl_options = {'INTERNAL'}
 
@@ -106,9 +107,9 @@ class FileIncrementalSave(bpy.types.Operator):
         return {'FINISHED'}
         ###### PENSER A TESTER AUTRES FICHIERS DU DOSSIER, VOIR SI TROU DANS NUMEROTATION==> WARNING
 
-class AutoIncrementalSave(bpy.types.Operator):
+class AutoIncrementalSaveModal(bpy.types.Operator):
     """  """
-    bl_idname = "file.auto_save_incremental"
+    bl_idname = "file.auto_save_incremental_modal"
     bl_label = "Auto Save Incremental"
     
     def modal(self, context, event):
@@ -120,7 +121,7 @@ class AutoIncrementalSave(bpy.types.Operator):
 
         if tm()-self.time >= context.user_preferences.addons[__name__].preferences.time_btw_save:
             print('Auto Saving...')
-            bpy.ops.file.save_incremental()
+            bpy.ops.file.auto_save_incremental()
             self.time = tm()
 
         return {'PASS_THROUGH'}
@@ -169,16 +170,16 @@ def draw_into_file_menu(self,context):
 
 
 def register():
-    bpy.utils.register_class(FileIncrementalSave)
-    bpy.types.INFO_MT_file.prepend(draw_into_file_menu)
     bpy.utils.register_class(AutoIncrementalSave)
+    bpy.types.INFO_MT_file.prepend(draw_into_file_menu)
+    bpy.utils.register_class(AutoIncrementalSaveModal)
     bpy.utils.register_class(AutoSaveIncrementalPreferencesPanel)
 
 
 def unregister():
-    bpy.utils.unregister_class(FileIncrementalSave)
-    bpy.types.INFO_MT_file.remove(draw_into_file_menu)
     bpy.utils.unregister_class(AutoIncrementalSave)
+    bpy.types.INFO_MT_file.remove(draw_into_file_menu)
+    bpy.utils.unregister_class(AutoIncrementalSaveModal)
     bpy.utils.unregister_class(AutoSaveIncrementalPreferencesPanel)
 
 
