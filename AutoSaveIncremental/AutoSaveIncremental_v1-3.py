@@ -48,7 +48,7 @@ class AutoSaveIncrementalPreferencesPanel(bpy.types.AddonPreferences):
 
 class AutoIncrementalSave(bpy.types.Operator):
     bl_idname = "file.auto_save_incremental"
-    bl_label = "Save Incremental"
+    bl_label = "Auto Save Incremental"
     bl_options = {'INTERNAL'}
 
     def execute(self, context):
