@@ -34,7 +34,7 @@ def detect_number(name):
             first_nb_index = len(name)-i+1 #+1 to restore previous index
             return (first_nb_index,last_nb_index,name[first_nb_index:last_nb_index]) #first: index of the number / last: last number index +1
     return False
-
+    
 class FileIncrementalSave(bpy.types.Operator):
     bl_idname = "file.save_incremental"
     bl_label = "Save Incremental"
