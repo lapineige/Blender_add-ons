@@ -107,8 +107,6 @@ class AutoIncrementalSave(bpy.types.Operator):
                         output = bpy.path.abspath("//") + dir_name + os.path.basename(f_path).split('.blend')[0][:d_nb_filepath[0]] + str_nb + os.path.basename(f_path).split('.blend')[0][d_nb_filepath[1]:] + '.blend'
                 else:
                     output = rp_f(f_path.split(".blend")[0] + '_' + '001' + '.blend')
-            print('1')
-            print('Output:', output)
             if os.path.isfile(output):
                 self.report({'WARNING'}, "Internal Error: trying to save over an existing file. Cancelled")
                 print('Tested Output: ', output)
