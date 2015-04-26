@@ -113,7 +113,6 @@ class AutoIncrementalSave(bpy.types.Operator):
                 return {'CANCELLED'}
 
             bpy.context.user_preferences.addons[__name__].preferences.active_main_save = True # active_main_save avoid restrarting at this state
-            bpy.ops.wm.save_mainfile()
             bpy.ops.wm.save_as_mainfile(filepath=output, copy=True)
             bpy.context.user_preferences.addons[__name__].preferences.active_main_save = False
 
@@ -153,7 +152,7 @@ class AutoIncrementalSaveModal(bpy.types.Operator):
         
         context.user_preferences.addons[__name__].preferences.dir_path = context.user_preferences.addons[__name__].preferences.dir_path_user_defined + os.path.basename(bpy.data.filepath.split('.blend')[0]) + sep # to create a directory with base file name # change to prefs => access from all the code
         dir_path = rp_d( os.path.dirname(bpy.data.filepath) + context.user_preferences.addons[__name__].preferences.dir_path ) # base path + new directory path
-
+        
         print()
         print('Creating directory and base file (copy of current file)...')
 
@@ -163,10 +162,10 @@ class AutoIncrementalSaveModal(bpy.types.Operator):
         else:
             os.makedirs(dir_path, exist_ok=True) # os.makedirs(dir_path) => it's enough (without any existence info)
             print('Directory created')
-
+        
         bpy.context.user_preferences.addons[__name__].preferences.active_main_save = True # active_main_save avoid restarting at this state
         basefile = rp_f( dir_path + bpy.path.basename(bpy.data.filepath).split('.blend')[0] + '_000' +  '.blend')
-        bpy.ops.wm.save_as_mainfile(filepath= basefile, copy=True)
+        bpy.ops.wm.save_as_mainfile(filepath=basefile, copy=True)
         bpy.context.user_preferences.addons[__name__].preferences.active_main_save = False
         print('Base file created: ', basefile)
 
