@@ -45,10 +45,9 @@ class AutoSaveIncrementalPreferencesPanel(bpy.types.AddonPreferences):
     bl_idname = __name__
     
     sep = os.path.sep
-    d_sep = sep + sep
 
     time_btw_save = IntProperty(default=300) # seconds
-    dir_path_user_defined = StringProperty(subtype='DIR_PATH', default= d_sep+'Auto Save'+sep, description="Output directory for the render") # user defined, will be changed by the code    # Voir chemin os + bouton setup adapté à l'os
+    dir_path_user_defined = StringProperty(subtype='DIR_PATH', default= '//'+'Auto Save'+sep, description="Output directory for the render") # user defined, will be changed by the code    # Voir chemin os + bouton setup adapté à l'os
     dir_path = StringProperty(subtype='DIR_PATH', default='', description="Output directory for the render used by the Auto Save tool")
     stop = BoolProperty(default=False, description="Property used to stop auto save - to avoid multiple simultaneous instances")
     active = BoolProperty(default=False, description="Property used to avoid starting it after a save - if not enabeled")
@@ -70,7 +69,6 @@ class AutoIncrementalSave(bpy.types.Operator):
 
     def execute(self, context):
         sep = os.path.sep
-        d_sep = sep + sep
         
         if bpy.data.filepath:
             dir_name = rp_d(context.user_preferences.addons[__name__].preferences.dir_path)
@@ -98,22 +96,22 @@ class AutoIncrementalSave(bpy.types.Operator):
                 #    str_nb.zfill(3)
                 if d_nb_filepath:
                     str_nb = str(int(d_nb_filepath[2]) + 1).zfill(len(d_nb_filepath[2]))
-
             # generating output file name
             if d_nb:
                 if len(increment_files[-1].split('.blend')[0]) < d_nb[1]: # in case last_nb_index is just after filename's max index
-                    output = bpy.path.abspath(d_sep) + dir_name + increment_files[-1].split('.blend')[0][:d_nb[0]] + str_nb + '.blend'
+                    output = bpy.path.abspath("//") + dir_name + increment_files[-1].split('.blend')[0][:d_nb[0]] + str_nb + '.blend'
                 else:
-                    output = bpy.path.abspath(d_sep) + dir_name + increment_files[-1].split('.blend')[0][:d_nb[0]] + str_nb + increment_files[-1].split('.blend')[0][d_nb[1]:] + '.blend'
+                    output = bpy.path.abspath("//") + dir_name + increment_files[-1].split('.blend')[0][:d_nb[0]] + str_nb + increment_files[-1].split('.blend')[0][d_nb[1]:] + '.blend'
             else:
                 if d_nb_filepath:
                     if len(os.path.basename(f_path).split('.blend')[0]) < d_nb_filepath[1]: # in case last_nb_index is just after filename's max index
-                        output = bpy.path.abspath(d_sep) + dir_name + os.path.basename(f_path).split('.blend')[0][:d_nb_filepath[0]] + str_nb + '.blend'
+                        output = bpy.path.abspath("//") + dir_name + os.path.basename(f_path).split('.blend')[0][:d_nb_filepath[0]] + str_nb + '.blend'
                     else:
-                        output = bpy.path.abspath(d_sep) + dir_name + os.path.basename(f_path).split('.blend')[0][:d_nb_filepath[0]] + str_nb + os.path.basename(f_path).split('.blend')[0][d_nb_filepath[1]:] + '.blend'
+                        output = bpy.path.abspath("//") + dir_name + os.path.basename(f_path).split('.blend')[0][:d_nb_filepath[0]] + str_nb + os.path.basename(f_path).split('.blend')[0][d_nb_filepath[1]:] + '.blend'
                 else:
                     output = rp_f(f_path.split(".blend")[0] + '_' + '001' + '.blend')
-
+            print('1')
+            print('Output:', output)
             if os.path.isfile(output):
                 self.report({'WARNING'}, "Internal Error: trying to save over an existing file. Cancelled")
                 print('Tested Output: ', output)
