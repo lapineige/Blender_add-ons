@@ -33,7 +33,7 @@ bpy.types.Scene.OW_exclude_type = bpy.props.EnumProperty(items=[('index','Materi
 bpy.types.Scene.OW_pass_index = bpy.props.IntProperty(name='Pass Index', default=1)
 bpy.types.Scene.OW_material = bpy.props.StringProperty(name='Material', maxlen=63)
 bpy.types.Scene.OW_group = bpy.props.StringProperty(name='Group', maxlen=63)
-bpy.types.Scene.OW_display_override = bpy.props.BoolProperty(name="Show 'Override ON' reminder", default=True)
+bpy.types.Scene.OW_display_override = bpy.props.BoolProperty(name="Show 'Override ON' Reminder", default=True)
 bpy.types.Scene.OW_start_on_render = bpy.props.BoolProperty(name="Override Render", default=True)
 bpy.types.Scene.OW_vis_hide_camera = bpy.props.BoolProperty(name="Hide From Camera", default=False)
 
