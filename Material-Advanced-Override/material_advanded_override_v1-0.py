@@ -16,7 +16,7 @@ bl_info = {
     "version": (1, 0),
     "blender": (2, 72, 0),
     "location": "Properties > Render Layers",
-    "warning": "",
+    "warning": "May not works with linked mesh",
     "wiki_url": "http://blenderlounge.fr/forum/viewtopic.php?f=26&t=810",
     "tracker_url": "http://blenderlounge.fr/forum/viewtopic.php?f=26&t=810",
     "category": "Render"}
@@ -151,12 +151,11 @@ class MaterialOverrideTools(bpy.types.Panel):
         row = layout.row()
         if bpy.types.RENDER_OT_override_setup.l_m:
             row.operator('render.override_restore')
-            row.prop(context.scene, 'OW_start_on_render')
-            layout.label('Do not save before having restored the material(s)', icon='CANCEL')
+            row.prop(context.scene, 'OW_start_on_render', toggle=True)
             layout.prop(context.scene, 'OW_display_override')
         else:
             row.operator('render.override_setup')
-            row.prop(context.scene, 'OW_start_on_render')
+            row.prop(context.scene, 'OW_start_on_render', toggle=True)
             
             
         
