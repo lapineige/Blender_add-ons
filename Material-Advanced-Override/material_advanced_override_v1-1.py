@@ -115,6 +115,8 @@ class OverrideSetup(bpy.types.Operator):
     
     @classmethod
     def poll(cls, context):
+        if not bpy.context.scene.render.engine == 'CYCLES':
+            return False
         if context.scene.OW_exclude_type == 'group' and not context.scene.OW_group:
             return False
         if context.scene.OW_exclude_type == 'layer' and not True in [i for i in context.scene.override_layer]:
