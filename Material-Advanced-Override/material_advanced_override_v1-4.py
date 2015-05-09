@@ -16,7 +16,7 @@ bl_info = {
     "version": (1, 4),
     "blender": (2, 72, 0),
     "location": "Properties > Render Layers",
-    "warning": "May not works with linked mesh",
+    "warning": "",
     "wiki_url": "",
     "tracker_url": "http://blenderlounge.fr/forum/viewtopic.php?f=26&t=810",
     "category": "Render"}
