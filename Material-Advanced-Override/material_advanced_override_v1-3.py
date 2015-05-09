@@ -127,7 +127,7 @@ class OverrideSetup(bpy.types.Operator):
 
         for obj in bpy.data.objects:
             if (obj.select == True)*context.scene.OW_only_selected or not context.scene.OW_only_selected:
-                if not hasattr(obj,'data'): # for empty, camera, lamp
+                if not hasattr(obj.data,'name'): # for empty, camera, lamp
                     continue
                 if not obj.data.name in self.l_mesh: # test mesh insteed of object -> in case of instancing, avoid duplicate 
                     self.l_mesh.append(obj.data.name)
