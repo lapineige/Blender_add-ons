@@ -34,7 +34,7 @@ bpy.types.Scene.OW_pass_index = bpy.props.IntProperty(name='Pass Index', default
 bpy.types.Scene.OW_material = bpy.props.StringProperty(name='Material', maxlen=63, description='Material to exclude')
 bpy.types.Scene.OW_group = bpy.props.StringProperty(name='Group', maxlen=63, description='Group of objects to exclude')
 bpy.types.Scene.OW_display_override = bpy.props.BoolProperty(name="Show 'Override ON' Reminder", default=True, description="Show 'Override On' in the 3D view")
-bpy.types.Scene.OW_start_on_render = bpy.props.BoolProperty(name="Override Render", default=True, description='Override material during render')
+bpy.types.Scene.OW_start_on_render = bpy.props.BoolProperty(name="Override Render", default=False, description='Override material during render')
 bpy.types.Scene.OW_vis_hide_camera = bpy.props.BoolProperty(name="Hide From Camera", default=False, description='Hide excluded objects from camera rays')
 
 
