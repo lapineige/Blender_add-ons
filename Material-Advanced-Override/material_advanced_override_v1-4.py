@@ -49,10 +49,10 @@ def draw_callback_px(self, context):
 ############
 # Layout
 
-class MaterialOverrideTools(bpy.types.Panel):
+class AdvancedMaterialOverride(bpy.types.Panel):
     """  """
-    bl_label = "Material Override Tools"
-    bl_idname = "material_override_tools"
+    bl_label = "Advanced Material Override"
+    bl_idname = "advanced_material_override"
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "render_layer"  
@@ -238,7 +238,7 @@ def mat_override_stop_on_load(dummy):
 def register():
     bpy.utils.register_class(OverrideSetup)
     bpy.utils.register_class(OverrideRestore)
-    bpy.utils.register_class(MaterialOverrideTools)
+    bpy.utils.register_class(AdvancedMaterialOverride)
     bpy.utils.register_class(OverrideDraw)    
     bpy.app.handlers.save_pre.append(stop_on_save)
     bpy.app.handlers.render_init.append(mat_override_pre_render)
@@ -250,7 +250,7 @@ def unregister():
             bpy.ops.render.override_restore() # To make sure materials will be restored
     bpy.utils.unregister_class(OverrideSetup)
     bpy.utils.unregister_class(OverrideRestore)
-    bpy.utils.unregister_class(MaterialOverrideTools)
+    bpy.utils.unregister_class(AdvancedMaterialOverride)
     bpy.utils.unregister_class(OverrideDraw)
     bpy.app.handlers.save_pre.remove(stop_on_save)
     bpy.app.handlers.render_init.remove(mat_override_pre_render)
