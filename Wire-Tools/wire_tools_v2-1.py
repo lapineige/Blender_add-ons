@@ -10,7 +10,7 @@ bl_info = {
     "name": "Wire Tools",
     "description": 'Quickly enable wire (into solid mode) to all objects, with some more shading tool',
     "author": "Lapineige",
-    "version": (2, 0),
+    "version": (2, 1),
     "blender": (2, 75, 0),
     "location": "3D View > Properties Panel > Shading",
     "warning": "",
