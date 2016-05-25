@@ -1,3 +1,6 @@
+Note: this repo is **outdated** and leaved here just to avoid breaking old links.
+Everything has been moved here: https://framagit.org/Lapineige/Blender_add-ons
+
 Blender_add-ons
 ===============
 [English version]
